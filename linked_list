@@ -1,0 +1,112 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Bağlı liste düğüm yapısı
+struct Node {
+    int data;          // Düğümün tuttuğu veri
+    struct Node* next; // Sonraki düğümün adresini tutan pointer
+};
+
+// Yeni düğüm ekleyen fonksiyon
+void insertAtEnd(struct Node** head, int newData) {
+    // Yeni düğüm için bellek ayırma
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = newData;
+    newNode->next = NULL;
+
+    // Eğer liste boşsa, yeni düğümü head olarak belirle
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    // Son düğümü bul ve next'ine yeni düğümü bağla
+    struct Node* last = *head;
+    while (last->next != NULL) {
+        last = last->next;
+    }
+    last->next = newNode;
+}
+
+// Bağlı listeyi yazdıran fonksiyon
+void printList(struct Node* node) {
+    while (node != NULL) {
+        printf("%d -> ", node->data);
+        node = node->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    struct Node* head = NULL; // Başlangıçta boş liste
+
+    insertAtEnd(&head, 10);
+    insertAtEnd(&head, 20);
+    insertAtEnd(&head, 30);
+
+    printList(head);
+    return 0;
+}
+
+// malloc() Nedir ve Neden Kullanılır?
+// C'de dinamik bellek tahsisi için malloc() fonksiyonu kullanılır. 
+// Bu fonksiyon heap bellek bölgesinde bir alan ayırır ve bu alanın adresini döndürür.
+
+// Örnek:
+// int *ptr = (int*)malloc(sizeof(int));
+// malloc(sizeof(int)) -> 4 baytlık bellek tahsis eder.
+// ptr değişkeni bu belleğin adresini tutar.
+
+// -> Operatörü Neden Kullanılır?
+// Bir pointer ile struct içindeki değişkenlere erişmek için -> operatörü kullanılır.
+// Örnek:
+// newNode->data = 10;   // Doğru
+// (*newNode).data = 10; // Alternatif ama okunması zor
+
+// data ve next Farkı Nedir?
+// struct Node {
+//     int data;          // Düğümün tuttuğu veri
+//     struct Node* next; // Sonraki düğümün adresini tutan pointer
+// };
+// data -> Düğümün tuttuğu veri
+// next -> Sonraki düğümün adresini tutan pointer
+// Başlangıçta next = NULL olur çünkü daha başka bir düğüm yoktur.
+
+// malloc() ile Yeni Düğüm Ekleme ve Bellekteki Görünüm
+// struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+// newNode->data = 10;
+// newNode->next = NULL;
+
+// Bellekte şu olur:
+// newNode  
+//    ↓
+// +----+------+
+// | 10 | NULL |
+// +----+------+
+
+// Eğer yeni bir düğüm eklersek, next pointer'ı o düğümü gösterecek şekilde değişir:
+// struct Node* secondNode = (struct Node*)malloc(sizeof(struct Node));
+// secondNode->data = 20;
+// secondNode->next = NULL;
+// newNode->next = secondNode;  // İlk düğüm, ikinci düğümü gösteriyor!
+
+// Bellekteki Yeni Durum:
+// newNode  
+//    ↓
+// +----+------+
+// | 10 | *----+-----> +----+------+
+// +----+      |       | 20 | NULL |
+//            +----+------+
+
+// İlk düğüm (10), next pointer'ında ikinci düğümün adresini tutuyor.
+// İkinci düğümün next pointer'ı ise NULL, çünkü son düğüm.
+
+// Özet
+// malloc() bellekten dinamik olarak alan ayırır ve bir pointer döndürür.
+// -> operatörü, pointer üzerinden struct elemanlarına erişmek için kullanılır.
+// Bağlı listede, her düğümün next pointer'ı, bir sonraki düğümün adresini tutar.
+// Son düğümün next pointer'ı NULL olur, çünkü listede ondan sonra başka düğüm yoktur.
+// Yeni düğümler eklendikçe next pointer'ları o düğümlere bağlanarak liste büyür.
+```
+
